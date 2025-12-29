@@ -23,25 +23,25 @@
 ## Phase 1: Project Foundation & Hexagonal Architecture Setup
 
 ### Step 1.1: Initialize Next.js Project with Hexagonal Structure
-- [ ] Run `create-next-app` with TypeScript and Tailwind CSS
-- [ ] Verify project runs on http://localhost:3000
-- [ ] Install additional dependencies: next-auth, @octokit/rest, chart.js, react-chartjs-2
-- [ ] Create hexagonal architecture structure under `src/`:
-  - [ ] `src/domain/models/`
-  - [ ] `src/domain/ports/`
-  - [ ] `src/domain/services/`
-  - [ ] `src/usecase/`
-  - [ ] `src/infrastructure/adapters/github/mappers/`
-  - [ ] `src/infrastructure/adapters/cache/`
-  - [ ] `src/infrastructure/adapters/auth/`
-  - [ ] `src/infrastructure/config/`
-  - [ ] `src/infrastructure/lib/`
-- [ ] Keep Next.js defaults: /app, /components, /types (if needed)
-- [ ] Update tsconfig.json with path aliases for @/src/*, @/domain/*, @/usecase/*, @/infrastructure/*
-- [ ] Create `.env.local.example` with all required variables
-- [ ] Add `.env.local` to `.gitignore`
-- [ ] Update README.md with hexagonal architecture explanation
-- [ ] Commit: "🎉 Initialize project with hexagonal architecture"
+- [x] Run `create-next-app` with TypeScript and Tailwind CSS
+- [x] Verify project runs on http://localhost:3000
+- [x] Install additional dependencies: next-auth, @octokit/rest, chart.js, react-chartjs-2
+- [x] Create hexagonal architecture structure under `src/`:
+  - [x] `src/domain/models/`
+  - [x] `src/domain/ports/`
+  - [x] `src/domain/services/`
+  - [x] `src/usecase/`
+  - [x] `src/infrastructure/adapters/github/mappers/`
+  - [x] `src/infrastructure/adapters/cache/`
+  - [x] `src/infrastructure/adapters/auth/`
+  - [x] `src/infrastructure/config/`
+  - [x] `src/infrastructure/lib/`
+- [x] Keep Next.js defaults: /app, /components, /types (if needed)
+- [x] Update tsconfig.json with path aliases for @/src/*, @/domain/*, @/usecase/*, @/infrastructure/*
+- [x] Create `.env.local.example` with all required variables
+- [x] Add `.env.local` to `.gitignore`
+- [x] Update README.md with hexagonal architecture explanation
+- [x] Commit: "🎉 Initialize project with hexagonal architecture"
 
 ### Step 1.2: Define Domain Models (Pure Business Entities - NO Framework Dependencies)
 - [ ] Create `src/domain/models/Release.ts`
