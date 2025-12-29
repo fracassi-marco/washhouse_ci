@@ -2,7 +2,7 @@
 
 **Architecture:** Hexagonal Architecture (Vertical Slices)  
 **Strategy:** Each feature is fully implemented through all layers for immediate, visible results  
-**Current Feature:** 🎯 Feature 1 - Authentication  
+**Current Feature:** 🎯 Feature 2 - Repository List  
 
 ---
 
@@ -18,29 +18,29 @@
 
 ## Feature 1: 🔐 Authentication with Google OAuth
 
-**Deliverable:** Users can log in with Google (@qomodo.me only) and see a protected dashboard
+**Deliverable:** Users can log in with Google and see a protected dashboard
 
 ### 1.1 Domain Layer - User Model
-- [ ] `src/domain/models/User.ts` - User class (id, email, name)
-- [ ] `src/domain/ports/IAuthProvider.ts` - Interface (getCurrentUser, validateDomain)
-- [ ] Unit tests for User model
-- [ ] ✅ **Checkpoint:** Pure domain model with no dependencies
-- [ ] **Commit:** "✨ Add User domain model"
+- [x] `src/domain/models/User.ts` - User class (id, email, name)
+- [x] `src/domain/ports/IAuthProvider.ts` - Interface (getCurrentUser, validateDomain)
+- [x] Unit tests for User model
+- [x] ✅ **Checkpoint:** Pure domain model with no dependencies
+- [x] **Commit:** "✨ Add User domain model"
 
 ### 1.2 Infrastructure - Auth Setup
-- [ ] `src/infrastructure/config/env.ts` - Environment config (Google, NextAuth vars)
-- [ ] `src/infrastructure/adapters/auth/NextAuthProvider.ts` - Implements IAuthProvider
-- [ ] `app/api/auth/[...nextauth]/route.ts` - NextAuth config with domain restriction
-- [ ] ✅ **Checkpoint:** Can log in with Google in browser
-- [ ] **Commit:** "🔐 Set up Google OAuth authentication"
+- [x] `src/infrastructure/config/env.ts` - Environment config (Google, NextAuth vars)
+- [x] `src/infrastructure/adapters/auth/NextAuthProvider.ts` - Implements IAuthProvider
+- [x] `app/api/auth/[...nextauth]/route.ts` - NextAuth config with domain restriction
+- [x] ✅ **Checkpoint:** Can log in with Google in browser
+- [x] **Commit:** "🔐 Set up Google OAuth authentication"
 
 ### 1.3 UI - Login & Protected Routes
-- [ ] `app/page.tsx` - Login page with "Sign in with Google" button
-- [ ] `components/providers/AuthProvider.tsx` - SessionProvider wrapper
-- [ ] `components/ProtectedRoute.tsx` - Auth check with redirect
-- [ ] `app/dashboard/page.tsx` - Protected dashboard (shows user email + logout)
-- [ ] ✅ **Checkpoint:** Full login flow works, dashboard is protected
-- [ ] **Commit:** "🎨 Add login UI and protected dashboard"
+- [x] `app/page.tsx` - Login page with "Sign in with Google" button
+- [x] `components/providers/AuthProvider.tsx` - SessionProvider wrapper
+- [x] `components/ProtectedRoute.tsx` - Auth check with redirect
+- [x] `app/dashboard/page.tsx` - Protected dashboard (shows user email + logout)
+- [x] ✅ **Checkpoint:** Full login flow works, dashboard is protected
+- [x] **Commit:** "🎨 Add login UI and protected dashboard"
 
 **✨ FEATURE 1 COMPLETE: Authentication works end-to-end!**
 

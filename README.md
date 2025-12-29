@@ -47,7 +47,7 @@ This dashboard provides a comprehensive view of your organization's repositories
 
 ## Features
 
-- **Authentication**: Google OAuth with domain restriction (@qomodo.me)
+- **Authentication**: Google OAuth (optional, controlled by feature flag)
 - **Real-time Data**: GitHub API integration with intelligent caching
 - **Visual Charts**: Monthly release history visualization
 - **Search & Filter**: Quick repository search functionality

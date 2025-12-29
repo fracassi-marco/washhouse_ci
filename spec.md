@@ -28,7 +28,6 @@ A Next.js web application that provides a comprehensive dashboard displaying sta
 
 ### Google OAuth Integration
 - **Provider**: Google OAuth 2.0 via NextAuth.js
-- **Domain Restriction**: Only users with `@qomodo.me` email addresses
 - **Session Management**: Standard Next.js session defaults
 - **Implementation Requirements**:
   - Configure Google Cloud Console OAuth 2.0 credentials
@@ -409,8 +408,7 @@ GITHUB_ORG=
 - **Cache Behavior**: Test cache hit/miss scenarios
 
 ### Manual Testing Checklist
-- [ ] Login with @qomodo.me account succeeds
-- [ ] Login with other domain fails with appropriate message
+- [ ] Login with Google account succeeds
 - [ ] Dashboard loads all repositories
 - [ ] Repository cards display all metrics correctly
 - [ ] Monthly release chart renders correctly
@@ -501,7 +499,7 @@ These are noted for potential future development:
 ## 16. Success Criteria
 
 The project is complete when:
-1. Dashboard successfully authenticates users with @qomodo.me domain
+1. Dashboard successfully authenticates users with Google email
 2. All repositories from GitHub organization are displayed
 3. Each repository card shows all specified metrics accurately
 4. Monthly release chart visualizes data correctly

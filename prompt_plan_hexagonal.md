@@ -565,7 +565,6 @@ Configure NextAuth.js in Next.js App Router with domain restriction.
 1. Create app/api/auth/[...nextauth]/route.ts:
    - Configure Google OAuth provider
    - Use EnvironmentConfig for credentials
-   - Add callback to validate @qomodo.me domain
    - Use NextAuthProvider for domain validation
 
 2. Update app/layout.tsx:
@@ -578,8 +577,7 @@ Configure NextAuth.js in Next.js App Router with domain restriction.
    - Logout button
 
 4. Test authentication flow:
-   - Login with @qomodo.me works
-   - Login with other domain fails
+   - Login with Google works
    - Session persists
 
 Success criteria:

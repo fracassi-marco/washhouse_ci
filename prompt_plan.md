@@ -101,7 +101,7 @@ Success criteria:
 
 ### Step 2.1: Configure NextAuth.js with Google OAuth
 
-**Context:** Implement authentication before any protected routes. Users must authenticate with @qomodo.me domain.
+**Context:** Implement authentication before any protected routes. Users must authenticate with Google.
 
 **Prompt:**
 ```
@@ -110,7 +110,6 @@ Implement NextAuth.js authentication with Google OAuth and domain restriction. T
 1. Create /app/api/auth/[...nextauth]/route.ts with NextAuth configuration:
    - Set up Google OAuth provider
    - Configure callbacks to check email domain
-   - Restrict access to @qomodo.me domain only
    - Use environment variables for credentials
 
 2. Add session and JWT callbacks to include user email in the session
@@ -129,12 +128,11 @@ Implement NextAuth.js authentication with Google OAuth and domain restriction. T
    - Logout button if authenticated
 
 6. Test the authentication flow:
-   - Verify login with @qomodo.me email works
-   - Verify login with other domains is rejected
+   - Verify login with Google email works
    - Verify logout works
 
 Success criteria:
-- Can log in with @qomodo.me email
+- Can log in with Google email
 - Other email domains are rejected with clear error message
 - Session persists across page reloads
 - Logout functionality works
@@ -1139,7 +1137,6 @@ Add end-to-end tests that cover the main user flows through the application.
 
 2. Create /e2e/auth.spec.ts:
    - Test login flow with Google OAuth (mock)
-   - Test domain restriction (@qomodo.me)
    - Test logout flow
    - Test redirect after login
    - Test protected route access
