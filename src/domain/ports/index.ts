@@ -1,1 +1,3 @@
-export { IAuthProvider } from './IAuthProvider';
+export { AuthProvider } from './AuthProvider';
+export { RepositoryProvider } from './RepositoryProvider';
+export { Logger } from './Logger';

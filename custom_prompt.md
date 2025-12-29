@@ -13,3 +13,6 @@ Try reorganizing the todo list so that each development leads to a visible incre
 
 # auth with feature flag
 Implement feature 1. Usa a feature flag to enable or disable authentication (default disabled)
+
+# abstraction naming
+I don't like the prefix I in front of abstractions, use a name without I

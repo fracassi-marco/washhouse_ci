@@ -51,19 +51,19 @@
 **Deliverable:** Dashboard shows all GitHub org repositories with basic info
 
 ### 2.1 Domain Layer - Repository Model (Minimal)
-- [ ] `src/domain/models/Repository.ts` - Basic repo (name, owner, url, description, language)
-- [ ] `src/domain/ports/IRepositoryProvider.ts` - Interface (listRepositories)
-- [ ] `src/domain/ports/ILogger.ts` - Interface (debug, info, warn, error)
-- [ ] Unit tests
-- [ ] ✅ **Checkpoint:** Domain models ready
-- [ ] **Commit:** "✨ Add Repository domain model"
+- [x] `src/domain/models/Repository.ts` - Basic repo (name, owner, url, description, language)
+- [x] `src/domain/ports/IRepositoryProvider.ts` - Interface (listRepositories)
+- [x] `src/domain/ports/ILogger.ts` - Interface (debug, info, warn, error)
+- [x] Unit tests
+- [x] ✅ **Checkpoint:** Domain models ready
+- [x] **Commit:** "✨ Add Repository domain model"
 
 ### 2.2 Infrastructure - GitHub Integration
-- [ ] `src/infrastructure/lib/logger.ts` - ConsoleLogger implements ILogger
-- [ ] `src/infrastructure/adapters/github/OctokitClient.ts` - GitHub API wrapper
-- [ ] `src/infrastructure/adapters/github/mappers/RepositoryMapper.ts` - API → Domain
-- [ ] `src/infrastructure/adapters/github/GitHubRepositoryProvider.ts` - Implements IRepositoryProvider
-- [ ] Update `src/infrastructure/config/env.ts` - Add GITHUB_TOKEN, GITHUB_ORG
+- [x] `src/infrastructure/lib/logger.ts` - ConsoleLogger implements ILogger
+- [x] `src/infrastructure/adapters/github/OctokitClient.ts` - GitHub API wrapper
+- [x] `src/infrastructure/adapters/github/mappers/RepositoryMapper.ts` - API → Domain
+- [x] `src/infrastructure/adapters/github/GitHubRepositoryProvider.ts` - Implements IRepositoryProvider
+- [x] Update `src/infrastructure/config/env.ts` - Add GITHUB_TOKEN, GITHUB_ORG
 - [ ] Integration tests
 - [ ] ✅ **Checkpoint:** Can fetch repos from GitHub API
 - [ ] **Commit:** "🔧 Implement GitHub repository provider"

@@ -5,7 +5,7 @@ import { User } from '../models/User';
  * Defines the contract for authentication operations
  * Implementations will be in the infrastructure layer
  */
-export interface IAuthProvider {
+export interface AuthProvider {
   /**
    * Gets the currently authenticated user
    * @returns User if authenticated, null otherwise

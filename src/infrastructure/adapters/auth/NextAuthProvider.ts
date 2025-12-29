@@ -1,13 +1,13 @@
 import { getServerSession } from 'next-auth';
-import { IAuthProvider } from '@/domain/ports/IAuthProvider';
+import { AuthProvider } from '@/domain/ports/AuthProvider';
 import { User } from '@/domain/models/User';
 import { EnvironmentConfig } from '@/infrastructure/config';
 
 /**
- * NextAuth implementation of IAuthProvider
+ * NextAuth implementation of AuthProvider
  * Handles authentication using NextAuth.js with Google OAuth
  */
-export class NextAuthProvider implements IAuthProvider {
+export class NextAuthProvider implements AuthProvider {
   /**
    * Gets the currently authenticated user from the session
    */
