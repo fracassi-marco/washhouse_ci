@@ -20,216 +20,356 @@
 
 ---
 
-## Phase 1: Project Foundation & Setup
+## Phase 1: Project Foundation & Hexagonal Architecture Setup
 
-### Step 1.1: Initialize Next.js Project
+### Step 1.1: Initialize Next.js Project with Hexagonal Structure
 - [ ] Run `create-next-app` with TypeScript and Tailwind CSS
 - [ ] Verify project runs on http://localhost:3000
 - [ ] Install additional dependencies: next-auth, @octokit/rest, chart.js, react-chartjs-2
-- [ ] Create directory structure: /lib, /types, /components
+- [ ] Create hexagonal architecture structure under `src/`:
+  - [ ] `src/domain/models/`
+  - [ ] `src/domain/ports/`
+  - [ ] `src/domain/services/`
+  - [ ] `src/usecase/`
+  - [ ] `src/infrastructure/adapters/github/mappers/`
+  - [ ] `src/infrastructure/adapters/cache/`
+  - [ ] `src/infrastructure/adapters/auth/`
+  - [ ] `src/infrastructure/config/`
+  - [ ] `src/infrastructure/lib/`
+- [ ] Keep Next.js defaults: /app, /components, /types (if needed)
+- [ ] Update tsconfig.json with path aliases for @/src/*, @/domain/*, @/usecase/*, @/infrastructure/*
 - [ ] Create `.env.local.example` with all required variables
 - [ ] Add `.env.local` to `.gitignore`
-- [ ] Create initial README.md with setup instructions
-- [ ] Commit: "Initial project setup"
+- [ ] Update README.md with hexagonal architecture explanation
+- [ ] Commit: "🎉 Initialize project with hexagonal architecture"
 
-### Step 1.2: Define Core TypeScript Types
-- [ ] Create `/types/dashboard.ts` with MonthlyRelease interface
-- [ ] Create RepositoryData interface with all metrics
-- [ ] Create OrganizationStats interface
-- [ ] Create CacheEntry interface
-- [ ] Add JSDoc comments to all interfaces
-- [ ] Create `/types/index.ts` for exports
-- [ ] Create `/types/__tests__/dashboard.test.ts`
-- [ ] Run tests to verify types work correctly
-- [ ] Commit: "Add TypeScript type definitions"
+### Step 1.2: Define Domain Models (Pure Business Entities - NO Framework Dependencies)
+- [ ] Create `src/domain/models/Release.ts`
+  - [ ] Release class (id, tagName, date, version)
+  - [ ] SemanticVersion value object
+  - [ ] ReleaseStats class
+  - [ ] MonthlyRelease interface
+- [ ] Create `src/domain/models/Build.ts`
+  - [ ] BuildRun class
+  - [ ] BuildStats class (totalSuccessful, totalAll, successRate)
+- [ ] Create `src/domain/models/Activity.ts`
+  - [ ] Commit class
+  - [ ] PullRequest class
+  - [ ] CodeChurn value object
+  - [ ] ActivityStats class
+- [ ] Create `src/domain/models/Contributor.ts`
+  - [ ] Contributor class
+  - [ ] ContributorStats class
+- [ ] Create `src/domain/models/CommitFrequency.ts`
+  - [ ] CommitFrequency class
+- [ ] Create `src/domain/models/Repository.ts`
+  - [ ] Repository aggregate root (composes all above)
+  - [ ] Enforce invariants in constructor
+  - [ ] Immutable by default
+- [ ] Create `src/domain/models/OrganizationStats.ts`
+  - [ ] OrganizationStats class
+- [ ] Add comprehensive JSDoc comments to all models
+- [ ] Create `src/domain/models/index.ts` for exports
+- [ ] VERIFY: NO imports from Next.js, React, Octokit, or any external library
+- [ ] Commit: "✨ Add domain models (pure business entities)"
 
----
+### Step 1.3: Define Domain Ports (Interfaces - Contracts)
+- [ ] Create `src/domain/ports/IRepositoryProvider.ts`
+  - [ ] listRepositories(orgName: string): Promise<Repository[]>
+  - [ ] getRepositoryTags(owner, repo): Promise<Release[]>
+  - [ ] getWorkflowRuns(owner, repo, workflowName, since): Promise<BuildRun[]>
+  - [ ] getContributors(owner, repo): Promise<Contributor[]>
+  - [ ] getCommitActivity(owner, repo, since): Promise<Commit[]>
+  - [ ] getMergedPullRequests(owner, repo, since): Promise<PullRequest[]>
+  - [ ] getCodeChurn(owner, repo, since): Promise<CodeChurn>
+- [ ] Create `src/domain/ports/ICacheProvider.ts`
+  - [ ] get<T>(key: string): Promise<T | null>
+  - [ ] set<T>(key, value, ttlMinutes?): Promise<void>
+  - [ ] invalidate(key: string): Promise<void>
+  - [ ] clear(): Promise<void>
+- [ ] Create `src/domain/ports/ILogger.ts`
+  - [ ] debug(message, context?): void
+  - [ ] info(message, context?): void
+  - [ ] warn(message, context?): void
+  - [ ] error(message, error?, context?): void
+- [ ] Create `src/domain/ports/IAuthProvider.ts`
+  - [ ] getCurrentUser(): Promise<User | null>
+  - [ ] validateDomain(email, allowedDomain): boolean
+- [ ] Create `src/domain/ports/index.ts` for exports
+- [ ] VERIFY: All ports are pure TypeScript interfaces
+- [ ] Commit: "🔌 Define domain ports (interfaces)"
 
-## Phase 2: Authentication Setup
-
-### Step 2.1: Configure NextAuth.js with Google OAuth
-- [ ] Create `/app/api/auth/[...nextauth]/route.ts`
-- [ ] Set up Google OAuth provider
-- [ ] Add email domain restriction callback (@qomodo.me)
-- [ ] Configure session and JWT callbacks
-- [ ] Create `/lib/auth.ts` with helper functions
-- [ ] Add SessionProvider to root layout
-- [ ] Create temporary test page at `/app/page.tsx`
-- [ ] Test login with @qomodo.me email (should work)
-- [ ] Test login with other domain (should fail)
-- [ ] Test logout functionality
-- [ ] Test session persistence across reloads
-- [ ] Commit: "Add NextAuth.js authentication"
-
-### Step 2.2: Create Protected Route Wrapper
-- [ ] Create `/components/providers/AuthProvider.tsx`
-- [ ] Create `/components/ProtectedRoute.tsx`
-- [ ] Create `/lib/api-auth.ts` with requireAuthAPI()
-- [ ] Update `/app/layout.tsx` to use AuthProvider
-- [ ] Create test protected page `/app/test-protected/page.tsx`
-- [ ] Create `/app/api/__tests__/auth.test.ts`
-- [ ] Test protected page redirects when not authenticated
-- [ ] Test no flash of protected content
-- [ ] Run all auth tests
-- [ ] Commit: "Add protected route utilities"
-
----
-
-## Phase 3: GitHub API Integration
-
-### Step 3.1: Create GitHub Service Base Layer
-- [ ] Create `/lib/github/client.ts` with Octokit initialization
-- [ ] Create `/lib/github/types.ts` for GitHub-specific types
-- [ ] Create `/lib/github/base.ts` with utility functions
-- [ ] Implement getOrganization() function
-- [ ] Implement listRepositories() with pagination
-- [ ] Add error handling and retry logic
-- [ ] Create `/lib/env.ts` for environment validation
-- [ ] Create `/lib/github/__tests__/base.test.ts`
-- [ ] Mock Octokit responses in tests
-- [ ] Test pagination handling
-- [ ] Test error scenarios
-- [ ] Verify env validation works
-- [ ] Commit: "Add GitHub API base layer"
-
-### Step 3.2: Implement Repository Tags and Release Fetching
-- [ ] Create `/lib/github/releases.ts`
-- [ ] Implement fetchRepositoryTags() function
-- [ ] Implement filterSemanticVersionTags() with regex
-- [ ] Implement calculateReleaseStats() function
-- [ ] Create `/lib/utils/date.ts` with helper functions
-- [ ] Implement isWithinLastYear()
-- [ ] Implement getMonthKey()
-- [ ] Implement daysSince()
-- [ ] Create `/lib/github/__tests__/releases.test.ts`
-- [ ] Test semantic version regex (v1.2.3, v0.0.1)
-- [ ] Test rejection of pre-release tags (v1.2.3-beta)
-- [ ] Test monthly breakdown calculation
-- [ ] Test days since calculation
-- [ ] Test edge cases (no tags, old tags, recent tags)
-- [ ] Commit: "Add release statistics fetching"
-
-### Step 3.3: Implement Workflow and Build Statistics Fetching
-- [ ] Create `/lib/github/workflows.ts`
-- [ ] Implement findWorkflowByName() function
-- [ ] Implement fetchWorkflowRuns() function
-- [ ] Implement calculateBuildStats() function
-- [ ] Handle workflow not found scenario (return null)
-- [ ] Create `/lib/utils/stats.ts` with calculation helpers
-- [ ] Implement calculateSuccessRate()
-- [ ] Implement roundToDecimal()
-- [ ] Create `/lib/github/__tests__/workflows.test.ts`
-- [ ] Test workflow finding (case-insensitive)
-- [ ] Test workflow not found scenario
-- [ ] Test build statistics calculations
-- [ ] Test success rate edge cases (0%, 100%)
-- [ ] Test time filtering (last 12 months)
-- [ ] Commit: "Add workflow and build statistics"
-
-### Step 3.4: Implement Repository Activity and Contributor Fetching
-- [ ] Create `/lib/github/activity.ts`
-- [ ] Implement fetchContributors()
-- [ ] Implement fetchCommitActivity()
-- [ ] Implement fetchMergedPRs()
-- [ ] Implement fetchCodeFrequency()
-- [ ] Implement calculateCommitFrequency()
-- [ ] Add date range helpers to `/lib/utils/date.ts`
-- [ ] Implement getLast30Days()
-- [ ] Implement getLast12Months()
-- [ ] Add retry logic for 202 responses
-- [ ] Create `/lib/github/aggregator.ts`
-- [ ] Implement combineActivityMetrics()
-- [ ] Create `/lib/github/__tests__/activity.test.ts`
-- [ ] Test all activity metric fetching
-- [ ] Test date filtering to last 30 days
-- [ ] Test 202 response retry logic
-- [ ] Test retry failure fallback
-- [ ] Commit: "Add activity and contributor metrics"
-
-### Step 3.5: Create Repository Data Aggregator
-- [ ] Create `/lib/github/repository.ts`
-- [ ] Implement fetchRepositoryData() main function
-- [ ] Integrate all previous functions (releases, builds, activity)
-- [ ] Add parallel fetching with Promise.all
-- [ ] Handle skip conditions (no workflow, API errors)
-- [ ] Return null for skipped repositories
-- [ ] Create `/lib/logger.ts` with logging utility
-- [ ] Add info, warn, error levels
-- [ ] Create `/lib/github/organization.ts`
-- [ ] Implement fetchOrganizationData()
-- [ ] Add concurrency limit (5 at a time)
-- [ ] Filter out null results
-- [ ] Create `/lib/github/__tests__/repository.test.ts`
-- [ ] Test complete data fetch
-- [ ] Test skip scenarios
-- [ ] Test parallel fetching
-- [ ] Create `/lib/github/__tests__/integration.test.ts`
-- [ ] Test full flow with mock organization (5 repos)
-- [ ] Test error handling across multiple repos
-- [ ] Commit: "Add repository data aggregator"
+### Step 1.4: Create Domain Services (Pure Business Logic)
+- [ ] Create `src/domain/services/ReleaseCalculator.ts`
+  - [ ] static filterSemanticVersions(releases): Release[]
+  - [ ] static calculateMonthlyBreakdown(releases, monthsBack): MonthlyRelease[]
+  - [ ] static calculateDaysSince(date): number
+  - [ ] static isWithinLastYear(date): boolean
+  - [ ] static isWithinLastMonth(date): boolean
+- [ ] Create `src/domain/services/BuildStatisticsCalculator.ts`
+  - [ ] static calculateSuccessRate(builds): number
+  - [ ] static filterByTimeRange(builds, since): BuildRun[]
+  - [ ] static countSuccessful(builds): number
+- [ ] Create `src/domain/services/ActivityAggregator.ts`
+  - [ ] static aggregateActivity(commits, prs, codeChurn): ActivityStats
+  - [ ] static calculateCommitFrequency(commits): CommitFrequency
+- [ ] Create `src/domain/services/OrganizationStatsCalculator.ts`
+  - [ ] static calculate(repositories): OrganizationStats
+  - [ ] static countReleasesThisMonth(repositories): number
+  - [ ] static calculateAverageBuildSuccessRate(repositories): number
+- [ ] Create `src/domain/services/index.ts` for exports
+- [ ] Write comprehensive unit tests for each service
+  - [ ] NO mocking needed (pure functions!)
+  - [ ] Test all edge cases
+  - [ ] Aim for 100% coverage
+- [ ] VERIFY: All services are pure static functions with NO external dependencies
+- [ ] Commit: "🧮 Add domain services (pure business logic)"
 
 ---
 
-## Phase 4: Caching Layer
+## Phase 2: Use Case Layer (Application Orchestration)
 
-### Step 4.1: Implement In-Memory Cache
-- [ ] Create `/lib/cache/memory-cache.ts`
-- [ ] Implement MemoryCache class with generic typing
-- [ ] Implement get() method
-- [ ] Implement set() method with TTL
-- [ ] Implement invalidate() method
-- [ ] Implement clear() method
-- [ ] Use Map for storage
-- [ ] Add timestamp tracking
-- [ ] Create `/lib/cache/repository-cache.ts`
-- [ ] Implement getCachedRepositoryData()
-- [ ] Implement setCachedRepositoryData()
-- [ ] Set default TTL to 15 minutes
-- [ ] Add cache statistics tracking (hits/misses)
-- [ ] Implement getCacheStats() method
-- [ ] Create `/lib/cache/__tests__/memory-cache.test.ts`
-- [ ] Test cache storage and retrieval
-- [ ] Test TTL expiration with fake timers
-- [ ] Test manual invalidation
-- [ ] Test cache miss scenarios
-- [ ] Create `/lib/cache/__tests__/repository-cache.test.ts`
-- [ ] Test 15-minute TTL
-- [ ] Test cache returns null when expired
-- [ ] Commit: "Add in-memory caching layer"
+### Step 2.1: Create FetchRepositoryData Use Case
+- [ ] Create `src/usecase/FetchRepositoryData.ts`
+  - [ ] Constructor accepts IRepositoryProvider and ILogger (dependency injection)
+  - [ ] execute(request: FetchRepositoryDataRequest): Promise<Repository>
+  - [ ] Define FetchRepositoryDataRequest interface (owner, repoName, workflowName, monthsBack, daysBack)
+  - [ ] Orchestrate data fetching using provider
+  - [ ] Use domain services for calculations (ReleaseCalculator, BuildStatisticsCalculator, ActivityAggregator)
+  - [ ] Handle errors gracefully (return null on skip, log errors)
+- [ ] Write tests with mocked ports
+  - [ ] Mock IRepositoryProvider
+  - [ ] Mock ILogger
+  - [ ] Test orchestration logic
+  - [ ] Test error handling
+- [ ] VERIFY: Use case depends ONLY on domain ports (no concrete implementations)
+- [ ] Commit: "🎯 Add FetchRepositoryData use case"
+
+### Step 2.2: Create FetchOrganizationData Use Case
+- [ ] Create `src/usecase/FetchOrganizationData.ts`
+  - [ ] Constructor accepts IRepositoryProvider, ICacheProvider, FetchRepositoryData, ILogger
+  - [ ] execute(request: FetchOrganizationDataRequest): Promise<OrganizationData>
+  - [ ] Define FetchOrganizationDataRequest (orgName, forceRefresh, workflowName)
+  - [ ] Define OrganizationData interface (repositories, stats, lastUpdated)
+  - [ ] Check cache first (unless forceRefresh=true)
+  - [ ] Fetch all repositories using provider
+  - [ ] Process repositories in parallel (concurrency limit: 5)
+  - [ ] Use OrganizationStatsCalculator for stats
+  - [ ] Cache results
+- [ ] Write tests with mocked ports
+  - [ ] Test cache hit scenario
+  - [ ] Test cache miss scenario
+  - [ ] Test forceRefresh behavior
+  - [ ] Test concurrency control
+  - [ ] Test error handling (skip failed repos)
+- [ ] VERIFY: Use case depends ONLY on domain ports
+- [ ] Commit: "🎯 Add FetchOrganizationData use case"
 
 ---
 
-## Phase 5: API Routes
+## Phase 3: Infrastructure Layer - Adapters (External Dependencies)
+
+### Step 3.1: Implement GitHub Repository Provider (Infrastructure Adapter)
+- [ ] Create `src/infrastructure/adapters/github/OctokitClient.ts`
+  - [ ] Wrapper around Octokit with error handling
+  - [ ] Rate limit handling with exponential backoff
+  - [ ] Retry logic for transient failures
+- [ ] Create `src/infrastructure/adapters/github/mappers/ReleaseMapper.ts`
+  - [ ] Map GitHub tag API response to Release domain model
+  - [ ] Extract semantic version information
+- [ ] Create `src/infrastructure/adapters/github/mappers/BuildMapper.ts`
+  - [ ] Map GitHub Actions workflow run to BuildRun domain model
+- [ ] Create `src/infrastructure/adapters/github/mappers/RepositoryMapper.ts`
+  - [ ] Map GitHub repository API response to Repository info
+- [ ] Create `src/infrastructure/adapters/github/mappers/index.ts` for exports
+- [ ] Create `src/infrastructure/adapters/github/GitHubRepositoryProvider.ts`
+  - [ ] Implements IRepositoryProvider interface
+  - [ ] Constructor accepts OctokitClient and orgName
+  - [ ] Implement all interface methods:
+    - [ ] listRepositories() - fetch from GitHub API, map with RepositoryMapper
+    - [ ] getRepositoryTags() - fetch tags, map with ReleaseMapper
+    - [ ] getWorkflowRuns() - find workflow by name, fetch runs, map with BuildMapper
+    - [ ] getContributors() - fetch and map contributors
+    - [ ] getCommitActivity() - fetch commits with date filtering
+    - [ ] getMergedPullRequests() - fetch merged PRs
+    - [ ] getCodeChurn() - fetch code frequency stats
+  - [ ] Add retry logic for 202 responses (statistics endpoints)
+  - [ ] Handle workflow not found (return null)
+  - [ ] Proper error handling throughout
+- [ ] Write integration tests
+  - [ ] Use nock for HTTP mocking
+  - [ ] Test all provider methods
+  - [ ] Test error scenarios
+  - [ ] Test retry logic
+  - [ ] Test pagination handling
+- [ ] VERIFY: Provider implements IRepositoryProvider completely
+- [ ] VERIFY: Uses mappers to convert DTOs to domain models
+- [ ] Commit: "🔧 Implement GitHub repository provider adapter"
+
+### Step 3.2: Implement Cache Provider (Infrastructure Adapter)
+- [ ] Create `src/infrastructure/adapters/cache/InMemoryCacheProvider.ts`
+  - [ ] Implements ICacheProvider<T> interface
+  - [ ] Use Map for storage
+  - [ ] Singleton pattern (static getInstance())
+  - [ ] Private constructor
+  - [ ] Implement get<T>(key): Promise<T | null>
+    - [ ] Check if exists and not expired
+    - [ ] Return null if expired
+  - [ ] Implement set<T>(key, value, ttlMinutes = 15): Promise<void>
+    - [ ] Store with expiration timestamp
+  - [ ] Implement invalidate(key): Promise<void>
+  - [ ] Implement clear(): Promise<void>
+  - [ ] Add cache statistics tracking (hits/misses)
+  - [ ] Create CacheEntry interface internally
+- [ ] Write unit tests
+  - [ ] Test cache storage and retrieval
+  - [ ] Test TTL expiration (use fake timers)
+  - [ ] Test manual invalidation
+  - [ ] Test cache miss scenarios
+  - [ ] Test statistics tracking
+- [ ] VERIFY: Provider implements ICacheProvider completely
+- [ ] VERIFY: Singleton pattern works correctly
+- [ ] Commit: "💾 Implement in-memory cache provider adapter"
+
+### Step 3.3: Implement Auth Provider and Configuration (Infrastructure)
+- [ ] Create `src/infrastructure/config/env.ts`
+  - [ ] EnvironmentConfig class with static getters:
+    - [ ] GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+    - [ ] NEXTAUTH_URL, NEXTAUTH_SECRET
+    - [ ] GITHUB_TOKEN, GITHUB_ORG
+    - [ ] WORKFLOW_NAME (default: "Build and Push to ECR")
+  - [ ] static validate() method - throw if required vars missing
+  - [ ] Add clear error messages
+- [ ] Create `src/infrastructure/adapters/auth/NextAuthProvider.ts`
+  - [ ] Implements IAuthProvider interface
+  - [ ] async getCurrentUser(): Promise<User | null>
+    - [ ] Use getServerSession from next-auth
+  - [ ] validateDomain(email, allowedDomain): boolean
+    - [ ] Check email ends with @domain
+- [ ] Create `src/infrastructure/lib/logger.ts`
+  - [ ] ConsoleLogger class implements ILogger
+  - [ ] Implement debug, info, warn, error methods
+  - [ ] Add timestamps
+  - [ ] Format logs consistently
+  - [ ] Respect environment (suppress debug in production)
+- [ ] Create `src/infrastructure/lib/errors.ts`
+  - [ ] Custom error classes:
+    - [ ] GitHubApiError
+    - [ ] RateLimitError
+    - [ ] AuthenticationError
+    - [ ] RepositoryNotFoundError
+  - [ ] Include status codes and helpful messages
+  - [ ] Include retry information
+- [ ] Create `src/infrastructure/config/index.ts` for exports
+- [ ] Create `src/infrastructure/lib/index.ts` for exports
+- [ ] VERIFY: All adapters implement their respective interfaces
+- [ ] Commit: "⚙️ Add configuration and infrastructure utilities"
+
+---
+
+## Phase 4: Next.js Integration - Authentication & API Routes (Thin Controllers)
+
+### Step 4.1: Configure NextAuth.js with Dependency Injection
+- [ ] Create `app/api/auth/[...nextauth]/route.ts`
+  - [ ] Import EnvironmentConfig for credentials
+  - [ ] Set up Google OAuth provider
+  - [ ] Add callback to validate email domain
+  - [ ] Use NextAuthProvider.validateDomain() for @qomodo.me restriction
+  - [ ] Configure session and JWT callbacks
+  - [ ] Include user email in session
+- [ ] Update `app/layout.tsx`
+  - [ ] Wrap app with SessionProvider
+  - [ ] Use Suspense for loading state
+- [ ] Create `app/page.tsx` (temporary test page)
+  - [ ] Show "Sign in with Google" button if not authenticated
+  - [ ] Show user info and logout button if authenticated
+- [ ] Test authentication flow
+  - [ ] Login with @qomodo.me email (should work)
+  - [ ] Login with other domain (should fail)
+  - [ ] Session persists across reloads
+  - [ ] Logout works correctly
+- [ ] VERIFY: Uses NextAuthProvider (infrastructure adapter)
+- [ ] VERIFY: Domain restriction works
+- [ ] Commit: "🔐 Configure NextAuth with domain restriction"
+
+### Step 4.2: Create Protected Route Components
+- [ ] Create `components/providers/AuthProvider.tsx`
+  - [ ] Client component wrapping SessionProvider
+  - [ ] Handle authentication state
+  - [ ] Show loading state while checking auth
+- [ ] Create `components/ProtectedRoute.tsx`
+  - [ ] Client component that checks authentication
+  - [ ] Redirect to login if not authenticated
+  - [ ] Show loading spinner during check
+  - [ ] Accept children to render when authenticated
+- [ ] Create test protected page `app/test-protected/page.tsx`
+  - [ ] Use ProtectedRoute component
+  - [ ] Display user session info
+- [ ] Write component tests
+  - [ ] Test redirect when not authenticated
+  - [ ] Test no flash of protected content
+  - [ ] Test renders children when authenticated
+- [ ] VERIFY: Protected routes work correctly
+- [ ] Commit: "🛡️ Add protected route components"
+
+---
+
+## Phase 5: API Routes with Dependency Injection
 
 ### Step 5.1: Create Repository Data API Endpoint
-- [ ] Create `/app/api/repositories/route.ts`
-- [ ] Implement GET handler
-- [ ] Add authentication check with requireAuthAPI()
-- [ ] Accept refresh query parameter
-- [ ] Implement cache check logic
-- [ ] Implement data fetching on cache miss
-- [ ] Create `/lib/stats/organization-stats.ts`
-- [ ] Implement calculateOrganizationStats()
-- [ ] Calculate total repositories count
-- [ ] Calculate releases this month
-- [ ] Calculate average build success rate
-- [ ] Handle edge cases (no repos, no builds)
-- [ ] Add comprehensive error handling
-- [ ] Return cached data on error if available
-- [ ] Add error logging with context
-- [ ] Create `/app/api/repositories/__tests__/route.test.ts`
-- [ ] Test authenticated vs unauthenticated requests
-- [ ] Test cache hit scenario
-- [ ] Test cache miss scenario
-- [ ] Test refresh parameter
-- [ ] Test error scenarios
-- [ ] Verify response structure
-- [ ] Test full integration flow
-- [ ] Commit: "Add repositories API endpoint"
+- [ ] Create `app/api/repositories/route.ts`
+  - [ ] Implement GET handler with dependency injection
+  - [ ] 1. Validate authentication:
+    - [ ] Create NextAuthProvider instance
+    - [ ] Call getCurrentUser()
+    - [ ] Return 401 if not authenticated
+  - [ ] 2. Create infrastructure adapters:
+    - [ ] OctokitClient with EnvironmentConfig.GITHUB_TOKEN
+    - [ ] GitHubRepositoryProvider with octokit and org name
+    - [ ] InMemoryCacheProvider.getInstance()
+    - [ ] ConsoleLogger instance
+  - [ ] 3. Create use cases with dependency injection:
+    - [ ] FetchRepositoryData(repositoryProvider, logger)
+    - [ ] FetchOrganizationData(repositoryProvider, cacheProvider, fetchRepositoryData, logger)
+  - [ ] 4. Execute use case:
+    - [ ] Parse refresh query parameter
+    - [ ] Call fetchOrgData.execute({ orgName, forceRefresh, workflowName })
+  - [ ] 5. Return JSON response:
+    - [ ] { repositories, stats, lastUpdated }
+  - [ ] Add comprehensive error handling
+    - [ ] Catch and log errors
+    - [ ] Return appropriate HTTP status codes
+    - [ ] Return cached data on error if available
+    - [ ] Don't expose sensitive information
+- [ ] Write API route tests
+  - [ ] Mock NextAuthProvider (test auth required)
+  - [ ] Mock use cases
+  - [ ] Test authenticated request success
+  - [ ] Test unauthenticated request (401)
+  - [ ] Test cache hit scenario
+  - [ ] Test cache miss scenario
+  - [ ] Test refresh parameter
+  - [ ] Test error scenarios
+  - [ ] Verify response structure
+- [ ] VERIFY: All layers connected via dependency injection
+- [ ] VERIFY: No tight coupling to concrete implementations in use cases
+- [ ] Commit: "🔌 Wire up API endpoint with dependency injection"
+
+### Step 5.2: Add Health Check Endpoint
+- [ ] Create `app/api/health/route.ts`
+  - [ ] Check GitHub API connectivity
+  - [ ] Check cache functionality
+  - [ ] Return status: healthy/degraded/unhealthy
+  - [ ] Include timestamp and version info
+- [ ] Write tests for health check
+  - [ ] Test healthy status
+  - [ ] Test degraded status
+  - [ ] Test unhealthy status
+- [ ] Commit: "🏥 Add health check endpoint"
 
 ---
 
-## Phase 6: Frontend - Layout and Dashboard Shell
+## Phase 6: Frontend - Layout and Dashboard Shell (Presentation Layer)
 
 ### Step 6.1: Create Dashboard Layout with Header
 - [ ] Create `/components/layout/Header.tsx`
@@ -260,7 +400,8 @@
 - [ ] Test logout button
 - [ ] Test DashboardLayout renders children
 - [ ] Test redirect logic
-- [ ] Commit: "Add dashboard layout and header"
+- [ ] VERIFY: Components consume API (application layer), don't call domain directly
+- [ ] Commit: "🎨 Add dashboard layout and header"
 
 ### Step 6.2: Create Organization Statistics Summary Bar
 - [ ] Create `/components/dashboard/StatsSummary.tsx`
@@ -287,7 +428,8 @@
 - [ ] Test StatsSummary renders all metrics
 - [ ] Test StatCard formatting
 - [ ] Test loading skeleton
-- [ ] Commit: "Add organization statistics summary"
+- [ ] VERIFY: StatsSummary displays data from OrganizationStats (domain model)
+- [ ] Commit: "📊 Add organization statistics summary"
 
 ### Step 6.3: Create Search and Filter Bar
 - [ ] Create `/components/dashboard/SearchBar.tsx`
@@ -315,11 +457,12 @@
 - [ ] Test sorting logic
 - [ ] Test debouncing behavior
 - [ ] Test empty results handling
-- [ ] Commit: "Add search and filter functionality"
+- [ ] VERIFY: Client-side filtering only, no business logic duplication
+- [ ] Commit: "🔍 Add search and filter functionality"
 
 ---
 
-## Phase 7: Frontend - Repository Cards
+## Phase 7: Frontend - Repository Cards (Presentation Layer)
 
 ### Step 7.1: Create Repository Card Shell
 - [ ] Create `/components/dashboard/RepositoryCard.tsx`
@@ -354,7 +497,9 @@
 - [ ] Test click handler opens correct URL
 - [ ] Test metric formatting functions
 - [ ] Test grid layout with multiple cards
-- [ ] Commit: "Add repository card component"
+- [ ] VERIFY: Cards display Repository domain model data
+- [ ] VERIFY: Formatting utilities are pure functions
+- [ ] Commit: "🗂️ Add repository card component"
 
 ### Step 7.2: Integrate Chart.js for Release History
 - [ ] Verify chart.js and react-chartjs-2 are installed
@@ -389,7 +534,8 @@
 - [ ] Test data transformation
 - [ ] Test chart configuration
 - [ ] Add snapshot test
-- [ ] Commit: "Integrate Chart.js for release charts"
+- [ ] VERIFY: Chart consumes MonthlyRelease[] from domain model
+- [ ] Commit: "📈 Integrate Chart.js for release charts"
 
 ### Step 7.3: Add Loading and Error States to Dashboard
 - [ ] Create `/components/ui/CardSkeleton.tsx`
@@ -424,11 +570,12 @@
 - [ ] Test retry button works
 - [ ] Test error boundary catches errors
 - [ ] Test toast notifications
-- [ ] Commit: "Add loading and error states"
+- [ ] VERIFY: Error handling at presentation layer only (no business logic)
+- [ ] Commit: "⏳ Add loading and error states"
 
 ---
 
-## Phase 8: Manual Refresh Functionality
+## Phase 8: Manual Refresh Functionality (UI → Use Case Integration)
 
 ### Step 8.1: Implement Manual Refresh with Cache Invalidation
 - [ ] Update `/components/layout/Header.tsx`
@@ -465,11 +612,13 @@
 - [ ] Test refresh with cache bypass
 - [ ] Test error handling
 - [ ] Test keyboard shortcut
-- [ ] Commit: "Add manual refresh functionality"
+- [ ] VERIFY: Refresh triggers use case execution via API endpoint
+- [ ] VERIFY: Cache invalidation happens at infrastructure layer
+- [ ] Commit: "🔄 Add manual refresh functionality"
 
 ---
 
-## Phase 9: Polish and Refinement
+## Phase 9: Polish and Refinement (All Layers)
 
 ### Step 9.1: Add Sorting and Additional UI Polish
 - [ ] Update `/hooks/useRepositoryFilter.ts`
@@ -504,10 +653,12 @@
 - [ ] Add focus indicators
 - [ ] Test with screen reader (basic)
 - [ ] Run axe DevTools
-- [ ] Commit: "Add UI polish and accessibility"
+- [ ] VERIFY: No business logic leaked into presentation layer
+- [ ] VERIFY: Sorting logic uses domain services if complex
+- [ ] Commit: "✨ Add UI polish and accessibility"
 
-### Step 9.2: Add Comprehensive Error Handling and Logging
-- [ ] Enhance `/lib/logger.ts`
+### Step 9.2: Add Comprehensive Error Handling and Logging (All Layers)
+- [ ] Enhance `src/infrastructure/lib/logger.ts`
 - [ ] Add log levels (debug, info, warn, error)
 - [ ] Add context object support
 - [ ] Format logs consistently
@@ -519,7 +670,7 @@
 - [ ] Track authentication errors
 - [ ] Track component render errors
 - [ ] Track network errors
-- [ ] Create `/lib/errors/github-errors.ts`
+- [ ] Enhance `src/infrastructure/lib/errors.ts`
 - [ ] Create GitHubApiError class
 - [ ] Create RateLimitError class
 - [ ] Create AuthenticationError class
@@ -537,7 +688,7 @@
 - [ ] Prepare stub for error tracking service
 - [ ] Include user context (email, session)
 - [ ] Include component stack traces
-- [ ] Create `/app/api/health/route.ts`
+- [ ] Verify `app/api/health/route.ts` works correctly
 - [ ] Check GitHub API connectivity
 - [ ] Check cache functionality
 - [ ] Return healthy/degraded/unhealthy status
@@ -546,11 +697,13 @@
 - [ ] Test error handling in API routes
 - [ ] Test error logging
 - [ ] Test health check endpoint
-- [ ] Commit: "Add error handling and logging"
+- [ ] VERIFY: Domain layer never logs directly (uses ILogger port if needed)
+- [ ] VERIFY: Error handling at appropriate layers (domain throws, infrastructure catches)
+- [ ] Commit: "🐛 Add comprehensive error handling and logging"
 
 ---
 
-## Phase 10: Testing and Quality Assurance
+## Phase 10: Testing and Quality Assurance (All Layers)
 
 ### Step 10.1: Add End-to-End Tests
 - [ ] Install @playwright/test
@@ -588,7 +741,11 @@
 - [ ] Compare against baseline
 - [ ] Test login page, dashboard, cards
 - [ ] Run all E2E tests and verify they pass
-- [ ] Commit: "Add end-to-end tests"
+- [ ] VERIFY: E2E tests validate complete flow through all layers
+- [ ] VERIFY: Domain tests remain pure (no mocking)
+- [ ] VERIFY: Use case tests mock only ports
+- [ ] VERIFY: Infrastructure tests mock only external APIs
+- [ ] Commit: "🧪 Add end-to-end tests"
 
 ### Step 10.2: Performance Testing and Optimization
 - [ ] Create `/tests/performance/dashboard.perf.ts`
@@ -627,7 +784,10 @@
 - [ ] Test cache effectiveness
 - [ ] Verify no memory leaks
 - [ ] Run all performance tests
-- [ ] Commit: "Add performance testing and optimizations"
+- [ ] VERIFY: Performance bottlenecks identified by layer
+- [ ] VERIFY: Domain layer performance (pure functions should be fast)
+- [ ] VERIFY: Infrastructure layer performance (API calls, caching)
+- [ ] Commit: "⚡ Add performance testing and optimizations"
 
 ---
 
@@ -677,7 +837,7 @@
 - [ ] Add "docker:run" script
 - [ ] Add "docker:stop" script
 - [ ] Verify Docker image size (< 200MB target)
-- [ ] Commit: "Add Docker configuration"
+- [ ] Commit: "🐳 Add Docker configuration"
 
 ### Step 11.2: Add Production Optimizations
 - [ ] Update next.config.js
@@ -726,7 +886,8 @@
 - [ ] Verify security headers are set
 - [ ] Test health checks work
 - [ ] Test metrics endpoint
-- [ ] Commit: "Add production optimizations"
+- [ ] VERIFY: Environment validation uses EnvironmentConfig
+- [ ] Commit: "🚀 Add production optimizations"
 
 ---
 
@@ -793,7 +954,9 @@
 - [ ] List any limitations
 - [ ] List future improvements
 - [ ] Note any workarounds
-- [ ] Commit: "Complete comprehensive testing"
+- [ ] VERIFY: All requirements from spec.md met
+- [ ] VERIFY: Hexagonal architecture principles maintained throughout
+- [ ] Commit: "✅ Complete comprehensive testing"
 
 ### Step 12.2: Final Documentation and Handoff
 - [ ] Update README.md
@@ -861,7 +1024,55 @@
 - [ ] Check all links are valid
 - [ ] Ensure instructions are easy to follow
 - [ ] Test setup from scratch with docs
-- [ ] Commit: "Complete final documentation"
+  - [ ] Verify hexagonal architecture is well documented
+  - [ ] Verify layer boundaries are clear in code
+- [ ] Commit: "📚 Complete final documentation"
+
+---
+
+## Hexagonal Architecture - Final Verification Checklist
+
+Before considering the project complete, verify these architectural principles:
+
+### ✅ Domain Layer (src/domain/)
+- [ ] NO imports from Next.js, React, Octokit, or any framework
+- [ ] All models are pure TypeScript classes/interfaces
+- [ ] All services are pure static functions (deterministic)
+- [ ] Domain tests require NO mocking (pure unit tests)
+- [ ] Business logic is framework-agnostic
+- [ ] Can be extracted and used in any other project
+
+### ✅ Use Case Layer (src/usecase/)
+- [ ] Depends ONLY on domain ports (interfaces)
+- [ ] NO concrete infrastructure implementations imported
+- [ ] Tests use mocked ports only
+- [ ] Orchestrates domain logic without business rules
+- [ ] Can be reused across different interfaces (API, CLI, etc.)
+
+### ✅ Infrastructure Layer (src/infrastructure/)
+- [ ] Implements all domain ports
+- [ ] Adapters convert external DTOs to domain models
+- [ ] All framework-specific code is here (Octokit, Next.js utilities)
+- [ ] Integration tests mock external APIs, not domain
+
+### ✅ API Routes (app/api/)
+- [ ] Thin controllers with dependency injection
+- [ ] Wire up adapters and use cases
+- [ ] NO business logic in routes
+- [ ] Handle HTTP concerns only (auth, status codes, JSON)
+
+### ✅ Presentation Layer (components/)
+- [ ] Components consume API endpoints
+- [ ] Display domain model data
+- [ ] NO business logic in components
+- [ ] Formatting is presentational, not business logic
+
+### ✅ Dependency Flow
+- [ ] Dependencies point inward: Infrastructure → Use Cases → Domain
+- [ ] Domain knows nothing about infrastructure
+- [ ] Use cases don't know about HTTP, Next.js, or Octokit
+- [ ] Easy to swap implementations (e.g., GitHub → GitLab)
+- [ ] Can test business logic without any framework
 
 ---
 
@@ -883,18 +1094,42 @@
 
 ## Notes
 
-**Estimated Total Time:** 7-11 days for experienced Next.js developer
+**Architecture:** Hexagonal Architecture (Ports and Adapters)  
+**Estimated Total Time:** 7-11 days for experienced Next.js developer  
+**Key Principle:** Domain-first development with dependency inversion
+
+**Folder Structure:**
+```
+src/
+├── domain/          # Pure business logic (NO framework dependencies)
+│   ├── models/      # Business entities
+│   ├── ports/       # Interfaces (contracts)
+│   └── services/    # Pure calculations
+├── usecase/         # Application orchestration
+└── infrastructure/  # Framework & external dependencies
+    ├── adapters/    # Implementations of ports
+    ├── config/      # Environment & configuration
+    └── lib/         # Framework utilities
+```
 
 **Progress Tracking:**
 - Update "Current Phase" at the top of this document
 - Check off items as completed
 - Add notes below for any blockers or deviations
 
+**Architecture Guidelines:**
+- ❌ Never import framework code into domain layer
+- ✅ Always use dependency injection in use cases
+- ✅ Test domain with pure unit tests (no mocking)
+- ✅ Test use cases with mocked ports
+- ✅ Keep controllers thin (wire dependencies only)
+
 **Blockers/Issues:**
 - _Add any blockers or issues here as they arise_
 
 **Deviations from Plan:**
 - _Document any changes from the original plan_
+- _Especially note any violations of hexagonal principles_
 
 ---
 
