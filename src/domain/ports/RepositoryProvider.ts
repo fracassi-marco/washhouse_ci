@@ -1,4 +1,13 @@
 import { Repository } from '../models/Repository';
+import { Release } from '../models/Release';
+
+/**
+ * Tag data from repository provider
+ */
+export interface RepositoryTag {
+  name: string;
+  date: Date;
+}
 
 /**
  * Repository provider port (interface)
@@ -12,4 +21,12 @@ export interface RepositoryProvider {
    * @returns Array of repositories
    */
   listRepositories(orgName: string): Promise<Repository[]>;
+
+  /**
+   * Gets tags/releases for a specific repository
+   * @param owner - Repository owner
+   * @param repo - Repository name
+   * @returns Array of tags
+   */
+  getRepositoryTags(owner: string, repo: string): Promise<RepositoryTag[]>;
 }

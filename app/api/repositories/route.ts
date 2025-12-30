@@ -68,6 +68,21 @@ export async function GET(request: NextRequest) {
         language: repo.language,
         starCount: repo.starCount,
         updatedAt: repo.updatedAt.toISOString(),
+        releaseStats: repo.releaseStats ? {
+          totalReleases: repo.releaseStats.totalReleases,
+          semanticReleases: repo.releaseStats.semanticReleases,
+          latestRelease: repo.releaseStats.latestRelease ? {
+            tagName: repo.releaseStats.latestRelease.tagName,
+            date: repo.releaseStats.latestRelease.date.toISOString(),
+            version: repo.releaseStats.latestRelease.version?.toString() || null,
+          } : null,
+          latestSemanticRelease: repo.releaseStats.latestSemanticRelease ? {
+            tagName: repo.releaseStats.latestSemanticRelease.tagName,
+            date: repo.releaseStats.latestSemanticRelease.date.toISOString(),
+            version: repo.releaseStats.latestSemanticRelease.version?.toString() || null,
+          } : null,
+          daysSinceLatestRelease: repo.releaseStats.daysSinceLatestRelease,
+        } : null,
       })),
       count: repositories.length,
       organization: githubOrg,

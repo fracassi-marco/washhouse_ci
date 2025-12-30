@@ -1,3 +1,5 @@
+import { formatDaysAgo, formatDate } from '@/lib/utils/formatters';
+
 interface Repository {
   name: string;
   owner: string;
@@ -6,6 +8,21 @@ interface Repository {
   language: string | null;
   starCount: number;
   updatedAt: string;
+  releaseStats?: {
+    totalReleases: number;
+    semanticReleases: number;
+    latestRelease: {
+      tagName: string;
+      date: string;
+      version: string | null;
+    } | null;
+    latestSemanticRelease: {
+      tagName: string;
+      date: string;
+      version: string | null;
+    } | null;
+    daysSinceLatestRelease: number | null;
+  } | null;
 }
 
 interface RepositoryCardProps {
@@ -68,6 +85,32 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
           Updated {new Date(repository.updatedAt).toLocaleDateString()}
         </span>
       </div>
+
+      {/* Release Information */}
+      {repository.releaseStats && repository.releaseStats.totalReleases > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 text-gray-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span>{repository.releaseStats.totalReleases} {repository.releaseStats.totalReleases === 1 ? 'release' : 'releases'}</span>
+              </div>
+              {repository.releaseStats.latestSemanticRelease && (
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-medium">
+                    v{repository.releaseStats.latestSemanticRelease.version}
+                  </span>
+                  <span className="text-gray-500 text-xs">
+                    {formatDaysAgo(repository.releaseStats.daysSinceLatestRelease || 0)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

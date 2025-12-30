@@ -1,3 +1,5 @@
+import { ReleaseStats } from './Release';
+
 /**
  * Repository domain model
  * Represents a GitHub repository with basic information
@@ -11,7 +13,8 @@ export class Repository {
     public readonly description: string | null,
     public readonly language: string | null,
     public readonly starCount: number = 0,
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
+    public readonly releaseStats: ReleaseStats | null = null
   ) {
     if (!name || name.trim() === '' || !owner || owner.trim() === '' || !url) {
       throw new Error('Repository name, owner, and url are required');
@@ -76,5 +79,22 @@ export class Repository {
    */
   public hasLanguage(): boolean {
     return this.language !== null;
+  }
+
+  /**
+   * Checks if repository has release statistics
+   */
+  public hasReleaseStats(): boolean {
+    return this.releaseStats !== null && this.releaseStats.hasReleases();
+  }
+
+  /**
+   * Gets the latest release version as a string
+   */
+  public getLatestReleaseVersion(): string | null {
+    if (!this.releaseStats?.latestSemanticRelease) {
+      return null;
+    }
+    return this.releaseStats.latestSemanticRelease.version?.toString() || null;
   }
 }

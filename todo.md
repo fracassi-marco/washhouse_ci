@@ -99,29 +99,29 @@
 **Deliverable:** Each repo card shows release count and latest release
 
 ### 3.1 Domain - Release Model
-- [ ] `src/domain/models/Release.ts` - Release (tagName, date, version), SemanticVersion, ReleaseStats
-- [ ] Update `src/domain/models/Repository.ts` - Add releases, releaseStats
-- [ ] `src/domain/services/ReleaseCalculator.ts` - calculateStats, filterSemanticVersions, calculateDaysSince
-- [ ] Unit tests
-- [ ] **Commit:** "✨ Add Release domain model"
+- [x] `src/domain/models/Release.ts` - Release (tagName, date, version), SemanticVersion, ReleaseStats
+- [x] Update `src/domain/models/Repository.ts` - Add releases, releaseStats
+- [x] `src/domain/services/ReleaseCalculator.ts` - calculateStats, filterSemanticVersions, calculateDaysSince
+- [x] Unit tests
+- [x] **Commit:** "✨ Add Release domain model"
 
 ### 3.2 Infrastructure - GitHub Releases
-- [ ] Update `src/domain/ports/IRepositoryProvider.ts` - Add getRepositoryTags()
-- [ ] `src/infrastructure/adapters/github/mappers/ReleaseMapper.ts` - GitHub tags → Release
-- [ ] Update `GitHubRepositoryProvider` - Implement getRepositoryTags()
-- [ ] Integration tests
-- [ ] **Commit:** "🔧 Add GitHub releases integration"
+- [x] Update `src/domain/ports/IRepositoryProvider.ts` - Add getRepositoryTags()
+- [x] `src/infrastructure/adapters/github/mappers/ReleaseMapper.ts` - GitHub tags → Release
+- [x] Update `GitHubRepositoryProvider` - Implement getRepositoryTags()
+- [x] Integration tests
+- [x] **Commit:** "🔧 Add GitHub releases integration"
 
 ### 3.3 Use Case - Enrich with Releases
-- [ ] `src/usecase/FetchRepositoryData.ts` - Fetch repo + tags, calculate stats
-- [ ] Update `FetchRepositories` - Use FetchRepositoryData for each repo
-- [ ] Tests
-- [ ] **Commit:** "🎯 Add release data to repositories"
+- [x] `src/usecase/FetchRepositoryData.ts` - Fetch repo + tags, calculate stats
+- [x] Update `FetchRepositories` - Use FetchRepositoryData for each repo
+- [x] Tests
+- [x] **Commit:** "🎯 Add release data to repositories"
 
 ### 3.4 UI - Display Releases
-- [ ] Update `RepositoryCard` - Show total releases, latest version, "X days ago"
-- [ ] `lib/utils/formatters.ts` - formatDaysAgo(), formatDate()
-- [ ] **Commit:** "📦 Display release information"
+- [x] Update `RepositoryCard` - Show total releases, latest version, "X days ago"
+- [x] `lib/utils/formatters.ts` - formatDaysAgo(), formatDate()
+- [x] **Commit:** "📦 Display release information"
 
 **✨ FEATURE 3 COMPLETE: Release data visible on each card!**
 
