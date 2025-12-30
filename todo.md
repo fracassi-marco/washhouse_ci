@@ -69,26 +69,26 @@
 - [x] **Commit:** "🔧 Implement GitHub repository provider"
 
 ### 2.3 Use Case - Fetch Repositories
-- [ ] `src/usecase/FetchRepositories.ts` - Constructor(provider, logger), execute(orgName)
-- [ ] Tests with mocked ports
-- [ ] ✅ **Checkpoint:** Use case orchestrates data fetching
-- [ ] **Commit:** "🎯 Add FetchRepositories use case"
+- [x] `src/usecase/FetchRepositories.ts` - Constructor(provider, logger), execute(orgName)
+- [x] Tests with mocked ports
+- [x] ✅ **Checkpoint:** Use case orchestrates data fetching
+- [x] **Commit:** "🎯 Add FetchRepositories use case"
 
 ### 2.4 API Route - Repositories Endpoint
-- [ ] `app/api/repositories/route.ts` - GET handler with dependency injection
-- [ ] Wire up: NextAuthProvider → GitHubProvider → FetchRepositories
-- [ ] Return JSON: { repositories: [] }
-- [ ] API tests
-- [ ] ✅ **Checkpoint:** API endpoint returns repo data
-- [ ] **Commit:** "🔌 Add repositories API endpoint"
+- [x] `app/api/repositories/route.ts` - GET handler with dependency injection
+- [x] Wire up: NextAuthProvider → GitHubProvider → FetchRepositories
+- [x] Return JSON: { repositories: [] }
+- [x] API tests
+- [x] ✅ **Checkpoint:** API endpoint returns repo data
+- [x] **Commit:** "🔌 Add repositories API endpoint"
 
 ### 2.5 UI - Repository Cards
-- [ ] `components/dashboard/RepositoryCard.tsx` - Card (name, description, language, click → GitHub)
-- [ ] `components/ui/Skeleton.tsx` - Loading skeleton
-- [ ] `components/ui/ErrorMessage.tsx` - Error state
-- [ ] Update `app/dashboard/page.tsx` - Fetch & display repos in grid
-- [ ] ✅ **Checkpoint:** Dashboard shows all repos!
-- [ ] **Commit:** "🗂️ Display repository list"
+- [x] `components/dashboard/RepositoryCard.tsx` - Card (name, description, language, click → GitHub)
+- [x] `components/ui/Skeleton.tsx` - Loading skeleton
+- [x] `components/ui/ErrorMessage.tsx` - Error state
+- [x] Update `app/dashboard/page.tsx` - Fetch & display repos in grid
+- [x] ✅ **Checkpoint:** Dashboard shows all repos!
+- [x] **Commit:** "🗂️ Display repository list"
 
 **✨ FEATURE 2 COMPLETE: Can see all organization repositories!**
 
