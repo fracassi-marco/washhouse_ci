@@ -109,10 +109,52 @@ See [.env.local.example](./.env.local.example) for required variables:
 - `GITHUB_TOKEN` - GitHub personal access token
 - `GITHUB_ORG` - GitHub organization name
 
+## Testing
+
+This project includes comprehensive unit and integration tests.
+
+### Running Tests
+
+```bash
+# Run unit tests only (default, fast)
+npm test
+
+# Run unit tests with coverage
+npm run test:coverage
+
+# Run integration tests (requires GITHUB_TOKEN)
+npm run test:integration
+
+# Run all tests (unit + integration)
+npm run test:all
+
+# Watch mode for development
+npm run test:watch
+```
+
+### Test Structure
+
+- **Unit Tests**: `__tests__/*.test.ts` - Fast, isolated tests with mocked dependencies
+- **Integration Tests**: `__tests__/integration/*.integration.test.ts` - Test real API interactions
+
+For more details on integration tests, see [__tests__/integration/README.md](./__tests__/integration/README.md).
+
+### Integration Test Setup
+
+Integration tests require a GitHub Personal Access Token:
+
+```bash
+export GITHUB_TOKEN=your_github_token_here
+npm run test:integration
+```
+
+Tests will automatically skip if the token is not set.
+
 ## Project Status
 
-🚧 **In Development** - Phase 1: Domain Layer Implementation
+🚧 **In Development** - Feature 2: Repository List
 
 ## License
 
 *To be determined*
+

@@ -3,6 +3,10 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/__tests__'],
   testMatch: ['**/__tests__/**/*.test.ts'],
+  testPathIgnorePatterns: [
+    // Skip integration tests by default unless explicitly requested
+    process.env.RUN_INTEGRATION_TESTS !== 'true' ? '__tests__/integration/' : '',
+  ].filter(Boolean),
   moduleNameMapper: {
     '^@/domain/(.*)$': '<rootDir>/src/domain/$1',
     '^@/usecase/(.*)$': '<rootDir>/src/usecase/$1',
@@ -21,4 +25,6 @@ module.exports = {
       statements: 80,
     },
   },
+  // Default timeout for unit tests
+  testTimeout: 5000,
 };

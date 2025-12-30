@@ -64,9 +64,9 @@
 - [x] `src/infrastructure/adapters/github/mappers/RepositoryMapper.ts` - API → Domain
 - [x] `src/infrastructure/adapters/github/GitHubRepositoryProvider.ts` - Implements IRepositoryProvider
 - [x] Update `src/infrastructure/config/env.ts` - Add GITHUB_TOKEN, GITHUB_ORG
-- [ ] Integration tests
-- [ ] ✅ **Checkpoint:** Can fetch repos from GitHub API
-- [ ] **Commit:** "🔧 Implement GitHub repository provider"
+- [x] Integration tests
+- [x] ✅ **Checkpoint:** Can fetch repos from GitHub API
+- [x] **Commit:** "🔧 Implement GitHub repository provider"
 
 ### 2.3 Use Case - Fetch Repositories
 - [ ] `src/usecase/FetchRepositories.ts` - Constructor(provider, logger), execute(orgName)
